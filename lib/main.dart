@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
               );
             },
           ),
-          home: const SplashScreen(),  // ✅ FIX: add back your start screen
+          home: const SignInPage(),  // ✅ FIX: add back your start screen
         ),
       ),
     );

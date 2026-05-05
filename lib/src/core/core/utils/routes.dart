@@ -45,7 +45,7 @@ class NavigateRoutes {
       await LocalStorages.logOutUser();
       return Navigator.pushAndRemoveUntil(
           navigatorKey.currentContext!,
-          MaterialPageRoute<Widget>(builder: (_) => const LoginScreenWidget()),
+          MaterialPageRoute<Widget>(builder: (_) => const SignInPage()),
               (Route<dynamic> route) => false);
     }
     return Timer(
@@ -53,7 +53,7 @@ class NavigateRoutes {
             () => Navigator.pushAndRemoveUntil(
             navigatorKey.currentContext!,
             MaterialPageRoute<Widget>(
-                builder: (_) => const LoginScreenWidget()),
+                builder: (_) => const SignInPage()),
                 (Route<dynamic> route) => false));
   }
 

@@ -47,6 +47,12 @@ class Constants {
   static const String guideSubTitle ="Your journey to unforgettable destinations starts here.";
   static const String getStarted ='Get Started';
   // static const String  = '';
+  static const String greetingLogin = "Access your trip and Bookings.";
+  static const String getMobileNo = "Enter mobile number";
+  static const String getSignIn = "Sign In";
+  static const String enterOtp = "Enter OTP";
+  static const String resendOtp = "Resend OTP";
+  static const String invalidOtp = "Invalid OTP";
 }
 
 class ConstantMessage {

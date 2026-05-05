@@ -14,233 +14,195 @@ import '../../widgets/custom_text_form.dart';
 import '../../widgets/submit_btn.dart';
 import '../login_index.dart';
 
-class LoginScreenWidget extends StatelessWidget {
-  const LoginScreenWidget({super.key});
+
+class SignInPage extends StatelessWidget {
+  const SignInPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final double headerHeight = MediaQuery.of(context).size.height * 0.4;
 
     return Consumer<LoginProvider>(
-      builder: (BuildContext context, LoginProvider loginProvider, _) {
+      builder: (context, loginProvider, _) {
         return Scaffold(
-          body: Stack(
-            children: <Widget>[
-              // Background Image
-             /* Positioned.fill(
-                child: Image.asset(
-                  Assets.loginTop,
-                  fit: BoxFit.cover,
-                ),
-              ),*/
-
-              // Login Content
-              SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: size.height),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const Spacer(flex: 4), // Pushes content to lower half
-
-                        CustomText(
-                          maxLines: 2,
-                          writtenText: Constants.welcome,
-                          textStyle: ThemeTextStyle.style(
-                            fontSize: context.width * 0.06,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+          backgroundColor: const Color(0xFFFCF9F8),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    // HEADER
+                    Container(
+                      height: headerHeight,
+                      width: double.infinity,
+                      color: const Color(0xFF003594),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 20),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 40),
+                          Text(
+                            Constants.getSignIn,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 36,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
-                        ),
-                        24.ph,
-                        CustomTextFormField(
-                          controller: loginProvider.mobileNoController,
-                          focusNode: loginProvider.mobileNoFocusNode,
-                          keyboardType: TextInputType.number,
-                          validator: (String? p0) {
-                            if (p0?.isEmpty ?? true) {
-                              return 'Please enter mobile number';
-                            }
-                            return null;
-                          },
-                          onChanged: (String p0) async {
-                            if (p0.length < 10) {
-                              loginProvider.resetOtpFlow();
-                            }
-                            if (p0.length == 10 && !loginProvider.isUserExist) {
-                              await loginProvider.getOtpApiCall();
-                            }
-                          },
-                          hintText:
-                          '${Constants.enter} ${Constants.mobileNumber}',
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(10),
-                          ],
-                        ),
-                        16.ph,
+                          SizedBox(height: 8),
+                          Text(
+                            Constants.greetingLogin,
+                            style: TextStyle(color: Colors.white70),
+                          ),
+                        ],
+                      ),
+                    ),
 
-                        // OTP Section
-                        if (loginProvider.mobileNoController.text.length == 10 &&
-                            loginProvider.isUserExist)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              CustomText(
-                                writtenText: 'Enter OTP',
-                                textStyle: ThemeTextStyle.style(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              12.ph,
-                              PinCodeTextField(
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                autoFocus: true,
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
-                                appContext: context,
-                                controller: loginProvider.otpController,
-                                focusNode: loginProvider.otpFocusNode,
-                                autoDisposeControllers: false,
-                                length: 6,
-                                obscuringCharacter: '*',
-                                animationType: AnimationType.scale,
-                                validator: (String? v) => null,
-                                pinTheme: PinTheme(
-                                  shape: PinCodeFieldShape.box,
-                                  borderRadius: BorderRadius.circular(10),
-                                  activeFillColor: Colors.white,
-                                  inactiveFillColor: Colors.white,
-                                  selectedFillColor: Colors.white,
-                                  selectedColor: Colors.black54,
-                                  inactiveColor: Colors.black45,
-                                  disabledColor: Colors.black45,
-                                ),
-                                cursorColor: Colors.black,
-                                animationDuration:
-                                const Duration(milliseconds: 300),
-                                textStyle: const TextStyle(fontSize: 18),
-                                enableActiveFill: true,
-                                keyboardType: TextInputType.number,
-                                boxShadows: const <BoxShadow>[
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 10,
-                                  )
-                                ],
-                              ),
-                              InkWell(
-                                onTap: loginProvider.timer == 0
-                                    ? () async {
-                                  await loginProvider.resendOtpApiCall();
+                    // CARD
+                    Padding(
+                      padding: EdgeInsets.only(top: headerHeight - 60),
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(40)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            /// MOBILE INPUT
+                            const Text("Mobile Number"),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller:
+                              loginProvider.mobileNoController,
+                              keyboardType: TextInputType.number,
+                              maxLength: 10,
+                              onChanged: (value) async {
+                                if (value.length < 10) {
+                                  loginProvider.resetOtpFlow();
                                 }
-                                    : null,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
+
+                                if (value.length == 10 &&
+                                    !loginProvider.isUserExist) {
+                                  await loginProvider.getOtpApiCall();
+                                }
+                              },
+                              decoration: const InputDecoration(
+                                hintText: Constants.getMobileNo,
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            /// OTP SECTION
+                            if (loginProvider.isUserExist)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(Constants.enterOtp),
+                                  const SizedBox(height: 8),
+                                  TextField(
+                                    controller:
+                                    loginProvider.otpController,
+                                    keyboardType: TextInputType.number,
+                                    maxLength: 6,
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  /// TIMER + RESEND
+                                  Row(
                                     mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      if (loginProvider
-                                          .otpController.text.isEmpty)
-                                        CustomText(
-                                          writtenText:
-                                          'Time Left : ${loginProvider.timer}',
-                                          textStyle: ThemeTextStyle.style(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          CustomText(
-                                            writtenText:
-                                            '${Constants.resend} ${Constants.otp}',
-                                            textStyle: ThemeTextStyle.style(
-                                              color: loginProvider.timer == 0
-                                                  ? ThemeColors.primaryColor
-                                                  : ThemeColors.greyColor,
-                                            ),
-                                          ),
-                                          8.pw,
-                                          CustomIcon(
-                                            icon: Icons.touch_app_outlined,
-                                            color: loginProvider.timer == 0
-                                                ? ThemeColors.primaryColor
-                                                : ThemeColors.greyColor,
-                                          ),
-                                        ],
+                                    children: [
+                                      Text(
+                                          "Time left: ${loginProvider.timer}"),
+                                      TextButton(
+                                        onPressed:
+                                        loginProvider.timer == 0
+                                            ? () {
+                                          loginProvider
+                                              .resendOtpApiCall();
+                                        }
+                                            : null,
+                                        child: const Text(Constants.resendOtp),
                                       ),
                                     ],
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
 
-                        // Submit button after OTP filled
-                        if (loginProvider.otpController.text.length == 6)
-                          Padding(
-                            padding:
-                            EdgeInsets.all(context.height * 0.015),
-                            child: SubmitButtonFillWidget(
-                              onTap: () async {
-                                await Utils.fetchDeviceInfo();
+                            const SizedBox(height: 20),
 
-                                if (loginProvider.otpController.text ==
-                                    loginProvider.getApiOtp ||
-                                    loginProvider.otpController.text ==
-                                        '852025') {
-                                  final Map<String, String> deviceData =
-                                      Utils.deviceInfo;
+                            /// LOGIN BUTTON
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: loginProvider
+                                    .otpController.text.length ==
+                                    6
+                                    ? () async {
+                                  if (loginProvider.otpController.text ==
+                                      loginProvider.getApiOtp ||
+                                      loginProvider.otpController.text ==
+                                          '852025') {
 
-                                  printDebug("Device Info: $deviceData");
-
-                                  await LocalStorages.saveUserData(
-                                      localSaveType:
-                                      LocalSaveType.mobileNumber,
-                                      value: loginProvider.mobileNoController
-                                          .text
-                                          .trim());
-                                  await LocalStorages.saveUserData(
-                                      localSaveType: LocalSaveType.otp,
-                                      value: loginProvider.otpController.text
-                                          .trim());
-                                  await LocalStorages.saveUserData(
+                                    await LocalStorages.saveUserData(
                                       localSaveType:
                                       LocalSaveType.isLoggedIn,
-                                      value: true);
+                                      value: true,
+                                    );
 
-                                  loginProvider.mobileNoController.clear();
-                                  loginProvider.getApiOtp = Constants.empty;
-                                  loginProvider.otpController.clear();
+                                    loginProvider.mobileNoController.clear();
+                                    loginProvider.otpController.clear();
+                                    loginProvider.resetOtpFlow();
 
-                                  await NavigateRoutes.navigateTo();
-                                } else {
-                                  EasyLoading.showInfo('Invalid OTP');
-                                  loginProvider.otpController.clear();
-                                  loginProvider.otpFocusNode.requestFocus();
+                                    await NavigateRoutes.navigateTo();
+                                  } else {
+                                    EasyLoading.showError(
+                                        Constants.invalidOtp);
+                                  }
                                 }
-                              },
-                              text: Constants.login,
-                              btnColor: ThemeColors.blueColor,
-                              textPadding:
-                              EdgeInsets.all(context.height * 0.015),
-                              isEnabled: false,
+                                    : null,
+                                child: const Text("Login"),
+                              ),
                             ),
-                          ),
 
-                        const Spacer(flex: 2), // Bottom space
-                      ],
+                            const SizedBox(height: 20),
+
+                            /// OPTIONAL SOCIAL (STILL USELESS BUT PRETTY)
+                            const Center(child: Text("Or continue with")),
+                            const SizedBox(height: 12),
+
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.g_mobiledata, size: 40),
+                                SizedBox(width: 20),
+                                Icon(Icons.facebook, size: 30),
+                              ],
+                            ),
+
+                            const SizedBox(height: 30),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
