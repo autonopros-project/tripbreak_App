@@ -86,11 +86,6 @@ class SignInPage extends StatelessWidget {
                                 if (value.length < 10) {
                                   loginProvider.resetOtpFlow();
                                 }
-
-                                if (value.length == 10 &&
-                                    !loginProvider.isUserExist) {
-                                  await loginProvider.getOtpApiCall();
-                                }
                               },
                               decoration: const InputDecoration(
                                 hintText: Constants.getMobileNo,
@@ -130,8 +125,8 @@ class SignInPage extends StatelessWidget {
                                         onPressed:
                                         loginProvider.timer == 0
                                             ? () {
-                                          loginProvider
-                                              .resendOtpApiCall();
+                                          // Simulate resend OTP
+                                          loginProvider.startTimer();
                                         }
                                             : null,
                                         child: const Text(Constants.resendOtp),
@@ -148,18 +143,38 @@ class SignInPage extends StatelessWidget {
                               width: double.infinity,
                               height: 50,
                               child: ElevatedButton(
-                                onPressed: loginProvider
-                                    .otpController.text.length ==
-                                    6
-                                    ? () async {
+                                onPressed: () async {
+
+                                  /// STEP 1 -> SEND OTP
+                                  if (!loginProvider.isUserExist) {
+
+                                    if (loginProvider.mobileNoController.text.length != 10) {
+                                      EasyLoading.showError("Enter valid mobile number");
+                                      return;
+                                    }
+
+                                    // Simulate OTP sent
+                                    loginProvider.isUserExist = true;
+                                    loginProvider.notifyListeners();
+                                    loginProvider.startTimer(); // Start the timer for resend
+
+                                    return;
+                                  }
+
+                                  /// STEP 2 -> VERIFY OTP
+                                  if (loginProvider.otpController.text.length != 6) {
+                                    EasyLoading.showError("Enter valid OTP");
+                                    return;
+                                  }
+
                                   if (loginProvider.otpController.text ==
                                       loginProvider.getApiOtp ||
-                                      loginProvider.otpController.text ==
-                                          '852025') {
+                                      loginProvider.otpController.text == '852025') {
+
+                                    EasyLoading.show(status: "Logging in...");
 
                                     await LocalStorages.saveUserData(
-                                      localSaveType:
-                                      LocalSaveType.isLoggedIn,
+                                      localSaveType: LocalSaveType.isLoggedIn,
                                       value: true,
                                     );
 
@@ -167,14 +182,19 @@ class SignInPage extends StatelessWidget {
                                     loginProvider.otpController.clear();
                                     loginProvider.resetOtpFlow();
 
+                                    EasyLoading.dismiss();
+
                                     await NavigateRoutes.navigateTo();
+
                                   } else {
-                                    EasyLoading.showError(
-                                        Constants.invalidOtp);
+                                    EasyLoading.showError(Constants.invalidOtp);
                                   }
-                                }
-                                    : null,
-                                child: const Text("Login"),
+                                },
+                                child: Text(
+                                  loginProvider.isUserExist
+                                      ? "Verify OTP"
+                                      : "Login",
+                                ),
                               ),
                             ),
 
@@ -188,6 +208,7 @@ class SignInPage extends StatelessWidget {
                               mainAxisAlignment:
                               MainAxisAlignment.center,
                               children: const [
+                                // only icon we will work lather as we get api on it
                                 Icon(Icons.g_mobiledata, size: 40),
                                 SizedBox(width: 20),
                                 Icon(Icons.facebook, size: 30),

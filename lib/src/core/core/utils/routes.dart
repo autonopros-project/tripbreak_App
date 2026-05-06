@@ -57,12 +57,14 @@ class NavigateRoutes {
                 (Route<dynamic> route) => false));
   }
 
+  // no outer screen for otp
   static dynamic navigateToOTPScreen() {
     // return Navigator.pushReplacement(
     //     navigatorKey.currentContext!,
     //     MaterialPageRoute<Widget>(
     //         builder: (_) => const OTPVerificationScreen()));
   }
+
 
   static Future<Widget?> navigatePush(
       {required Widget widget, BuildContext? context}) {

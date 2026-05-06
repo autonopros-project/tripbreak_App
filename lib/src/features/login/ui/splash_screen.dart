@@ -19,9 +19,9 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    super.initState();
     configLoading();
     getVersion();
-    super.initState();
   }
 
   void configLoading() {
@@ -41,25 +41,52 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> getVersion() async {
-    LoginProvider loginProvider = Provider.of(context, listen: false);
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    // String version = packageInfo.buildNumber;
-    dynamic appVersionString = packageInfo.version
-        .split('.')
-        .take(2)
-        .join('.'); // Extract the first two parts
-    double appVersion = double.tryParse(appVersionString) ?? 0.0;
-    printDebug(
-        "packageInfo.version ${packageInfo.version} ${packageInfo.buildNumber} $appVersion $appVersionString");
-    // Set the app version in LoginProvider
-    loginProvider.setAppVersion(appVersion);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loginProvider.getVersionCheckApiCall(appVersion).then((bool value) {
-        if (value) {
-          NavigateRoutes.navigateTo();
-        }
-      });
-    });
+    try {
+      final LoginProvider loginProvider =
+      Provider.of<LoginProvider>(context, listen: false);
+
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+      String appVersionString =
+      packageInfo.version.split('.').take(2).join('.');
+
+      double appVersion = double.tryParse(appVersionString) ?? 0.0;
+
+      printDebug(
+        "Version: ${packageInfo.version} "
+            "Build: ${packageInfo.buildNumber} "
+            "Parsed: $appVersion",
+      );
+
+      loginProvider.setAppVersion(appVersion);
+
+      bool value = await loginProvider.getVersionCheckApiCall(appVersion);
+
+      printDebug("API RESULT => $value");
+
+      if (!mounted) return;
+
+      if (value) {
+        EasyLoading.dismiss();
+        Navigator.pushReplacementNamed(
+          context,
+          NavigateRoutes.navigateToLoginScreen(),
+        );
+      } else {
+        printDebug("Version check failed");
+      }
+    } catch (e) {
+      printDebug("Splash Error => $e");
+      // fallback navigation
+      EasyLoading.dismiss();
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(
+        context,
+        NavigateRoutes.navigateToLoginScreen(),
+      );
+    }finally{
+      EasyLoading.dismiss();
+    }
   }
 
   @override

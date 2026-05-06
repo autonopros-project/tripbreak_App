@@ -1,58 +1,117 @@
-
-
-
 import '../../../../common_imports.dart';
-import '../../../core/core/constants/constant_text.dart';
-import '../../../core/core/network/common_repository.dart';
-import '../../../core/core/network/network_index.dart';
-import '../../../core/core/utils/routes.dart';
+import '../repository/home_repository.dart';
 
 class HomeProvider extends ChangeNotifier {
-  bool isLoading = false;
 
-  void isLoadData(bool isLoading) {
-    this.isLoading = isLoading;
-    //  notifyListeners();
+  final HomeRepository repository;
+
+  HomeProvider(this.repository);
+
+  bool isLoadingBanner = false;
+  bool isLoadingPopular = false;
+  bool isLoadingRecommended = false;
+
+  Map<String, dynamic>? headerData;
+
+  List<dynamic> bannerList = [];
+  List<dynamic> popularList = [];
+  List<dynamic> recommendedList = [];
+
+  Future<void> fetchAllHomeData() async {
+
+    await Future.wait([
+      fetchHeaderData(),
+      fetchBannerData(),
+      fetchPopularPlaces(),
+      fetchRecommendedPlaces(),
+    ]);
   }
 
-//********************************GET SAVE IMSQ INSPECT DETAILS API CALL**********************************//
-  Future<void> postIMSQInspectDetailsApiCall(
-      HomeProvider homeProvider) async {
-    final HTTPResponse<dynamic> response = await ApiCalling.callApi(
-      apiUrl: AppUrls.registerDetails,
-      apiFunType: APITypes.post,
-      //sendingData: postList.toJson(),
-    );
+  Future<void> fetchHeaderData() async {
 
-    print('API Response: ${response.body}');
-    //print('API Response: ${postList.toJson()}');
-    print('Response Type: ${response.body.runtimeType}');
+    try {
 
-    if (response.body is Map<String, dynamic>) {
-      final responseBody = response.body as Map<String, dynamic>;
-      final mItem1 = responseBody['m_Item1'] as Map<String, dynamic>?;
+      final response =
+      await repository.getHeaderData();
 
-      if (mItem1 != null) {
-        final responseCode = mItem1['ResponseCode'];
-        final description = mItem1['Description'];
+      headerData = response;
 
-        if (responseCode == '300' && description != null) {
-          EasyLoading.showError(description); // Error case
-        } else if (responseCode == '200' && description != null) {
-          EasyLoading.showSuccess(description); // Show success message like "Success Pkey is :3"
-          await Future.delayed(const Duration(seconds: 2));
-          NavigateRoutes.navigatePop();
-        } else {
-          EasyLoading.showError(description ?? ConstantMessage.somethingWentWrongPleaseTryAgain);
-        }
-      }
+      notifyListeners();
 
+    } catch (e) {
+
+      debugPrint(e.toString());
     }
-
-    notifyToAllValues();
   }
 
+  Future<void> fetchBannerData() async {
 
+    try {
 
-  void notifyToAllValues() => notifyListeners();
+      isLoadingBanner = true;
+      notifyListeners();
+
+      final response =
+      await repository.getBannerData();
+
+      bannerList = response['data'] ?? [];
+
+    } catch (e) {
+
+      debugPrint(e.toString());
+
+    } finally {
+
+      isLoadingBanner = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchPopularPlaces() async {
+
+    try {
+
+      isLoadingPopular = true;
+      notifyListeners();
+
+      final response =
+      await repository.getPopularPlaces();
+
+      popularList = response['data'] ?? [];
+
+    } catch (e) {
+
+      debugPrint(e.toString());
+
+    } finally {
+
+      isLoadingPopular = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchRecommendedPlaces() async {
+
+    try {
+
+      isLoadingRecommended = true;
+      notifyListeners();
+
+      final response =
+      await repository.getRecommendedPlaces();
+
+      recommendedList = response['data'] ?? [];
+
+    } catch (e) {
+
+      debugPrint(e.toString());
+
+    } finally {
+
+      isLoadingRecommended = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> postIMSQInspectDetailsApiCall(HomeProvider homeProvider) async {}
 }

@@ -4,6 +4,8 @@ import 'package:tripBreak/src/core/core/theme/colors.dart';
 import 'package:tripBreak/src/core/core/utils/routes.dart';
 import 'package:tripBreak/src/core/core/utils/shared_preference.dart';
 import 'package:tripBreak/src/features/Home/provider/home_screen_provider.dart';
+import 'package:tripBreak/src/features/Home/repository/home_repository.dart';
+import 'package:tripBreak/src/features/Home/ui/homescreen.dart';
 import 'package:tripBreak/src/features/login/login_index.dart';
 
 import 'common_imports.dart';
@@ -27,7 +29,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<LoginProvider>(create: (_) => LoginProvider()),
-        ChangeNotifierProvider<HomeProvider>(create: (_) => HomeProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider(HomeRepository(),),
+        ),
         // Add other providers here as needed
       ],
       child: SafeArea(
@@ -51,7 +54,7 @@ class MyApp extends StatelessWidget {
               );
             },
           ),
-          home: const SignInPage(),  // ✅ FIX: add back your start screen
+          home: const HomeScreen(),  // ✅ FIX: add back your start screen
         ),
       ),
     );

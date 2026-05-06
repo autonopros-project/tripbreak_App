@@ -14,13 +14,13 @@ class TripBreakApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: GuideScreen(),
     );
   }
 }
 
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+class GuideScreen extends StatelessWidget {
+  const GuideScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
