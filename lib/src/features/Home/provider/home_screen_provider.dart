@@ -130,4 +130,9 @@ class HomeProvider extends ChangeNotifier {
     popularSites[index] = currentSite.copyWith(isFavorite: !currentSite.isFavorite);
     notifyListeners();
   }
+
+  Future<void> postIMSQInspectDetailsApiCall(HomeProvider homeProvider) async {
+    // This was previously defined as an empty stub or handled specific logic
+    notifyListeners();
+  }
 }
