@@ -1,5 +1,6 @@
 import '../../../../common_imports.dart';
 import '../model/explore_model.dart';
+import '../model/profile_model.dart';
 import '../model/trip_model.dart';
 import '../repository/home_repository.dart';
 
@@ -17,6 +18,8 @@ class HomeProvider extends ChangeNotifier {
       fetchExploreData();
     } else if (_currentTabIndex == 2 && upcomingTrips.isEmpty) {
       fetchTripsData();
+    } else if (_currentTabIndex == 3 && userProfile == null) {
+      fetchProfileData();
     }
     notifyListeners();
   }
@@ -53,6 +56,10 @@ class HomeProvider extends ChangeNotifier {
   List<TripModel> upcomingTrips = [];
   List<TripModel> pastTrips = [];
   List<TripModel> wishlistTrips = [];
+
+  // Profile Screen States
+  bool isLoadingProfile = false;
+  UserProfile? userProfile;
 
   Future<void> fetchAllHomeData() async {
     await Future.wait([
@@ -128,6 +135,21 @@ class HomeProvider extends ChangeNotifier {
       debugPrint("Error fetching wishlist: $e");
     } finally {
       isLoadingTrips = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchProfileData() async {
+    try {
+      isLoadingProfile = true;
+      notifyListeners();
+
+      final response = await repository.getUserProfile();
+      userProfile = UserProfile.fromJson(response);
+    } catch (e) {
+      debugPrint("Error fetching profile: $e");
+    } finally {
+      isLoadingProfile = false;
       notifyListeners();
     }
   }

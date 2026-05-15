@@ -13,6 +13,9 @@ import 'widgets/my_trips_header.dart';
 import 'widgets/trips_tab_selector.dart';
 import 'widgets/filter_chips.dart';
 import 'widgets/trip_card.dart';
+import 'widgets/profile_header.dart';
+import 'widgets/profile_info.dart';
+import 'widgets/profile_menu_list.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -48,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildMyTripsTab(provider),
 
               // Profile Tab (Index 3)
-              const Center(child: Text("Profile Screen")),
+              _buildProfileTab(provider),
             ],
           );
         },
@@ -151,6 +154,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProfileTab(HomeProvider provider) {
+    if (provider.isLoadingProfile && provider.userProfile == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return RefreshIndicator(
+      onRefresh: () async {
+        await provider.fetchProfileData();
+      },
+      child: SingleChildScrollView(
+        child: Column(
+          children: const [
+            ProfileHeader(),
+            ProfileInfo(),
+            ProfileMenuList(),
+          ],
+        ),
       ),
     );
   }

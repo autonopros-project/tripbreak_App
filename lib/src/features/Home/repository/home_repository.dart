@@ -219,4 +219,17 @@ class HomeRepository {
       ]
     };
   }
+
+  // New methods for Profile Screen
+  Future<dynamic> getUserProfile() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return {
+      "name": "John Cena",
+      "email": "johncena@gmail.com",
+      "avatar_url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+      "countries_visited": 12,
+      "total_trips": 18,
+      "flights_booked": 25,
+    };
+  }
 }
