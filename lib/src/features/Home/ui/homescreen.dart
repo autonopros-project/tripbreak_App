@@ -9,6 +9,10 @@ import 'widgets/explore_header.dart';
 import 'widgets/explore_categories.dart';
 import 'widgets/popular_destinations.dart';
 import 'widgets/popular_sites.dart';
+import 'widgets/my_trips_header.dart';
+import 'widgets/trips_tab_selector.dart';
+import 'widgets/filter_chips.dart';
+import 'widgets/trip_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,10 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
               // Explore Tab (Index 1)
               _buildExploreTab(),
 
-              // i will do it in next agile
               // My Trips Tab (Index 2)
-              const Center(child: Text("My Trips Screen")),
-              
+              _buildMyTripsTab(provider),
+
               // Profile Tab (Index 3)
               const Center(child: Text("Profile Screen")),
             ],
@@ -89,6 +92,64 @@ class _HomeScreenState extends State<HomeScreen> {
           PopularDestinations(),
           SizedBox(height: 20),
           PopularSites(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMyTripsTab(HomeProvider provider) {
+    return SafeArea(
+      child: Column(
+        children: [
+          const MyTripsHeader(),
+          const TripsTabSelector(),
+          const FilterChips(),
+          Expanded(
+            child: provider.isLoadingTrips && 
+                   (provider.tripsTabIndex == 0 ? provider.upcomingTrips.isEmpty : provider.wishlistTrips.isEmpty)
+                ? const Center(child: CircularProgressIndicator())
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      if (provider.tripsTabIndex == 0) {
+                        await provider.fetchTripsData();
+                      } else {
+                        await provider.fetchWishlistData();
+                      }
+                    },
+                    child: ListView(
+                      padding: const EdgeInsets.only(top: 10, bottom: 20),
+                      children: [
+                        if (provider.tripsTabIndex == 0) ...[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            child: Text(
+                              "Upcoming Trips",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          ...provider.upcomingTrips.map((trip) => TripCard(trip: trip)),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            child: Text(
+                              "Past Trips",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          ...provider.pastTrips.map((trip) => TripCard(trip: trip)),
+                        ] else ...[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            child: Text(
+                              "My Wishlist",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          ...provider.wishlistTrips.map((trip) => TripCard(trip: trip, isWishlistStyle: true)),
+                        ],
+                      ],
+                    ),
+                  ),
+          ),
         ],
       ),
     );

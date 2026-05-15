@@ -1,5 +1,6 @@
 import '../../../../common_imports.dart';
 import '../model/explore_model.dart';
+import '../model/trip_model.dart';
 import '../repository/home_repository.dart';
 
 class HomeProvider extends ChangeNotifier {
@@ -14,6 +15,19 @@ class HomeProvider extends ChangeNotifier {
     _currentTabIndex = index;
     if (_currentTabIndex == 1 && exploreCategories.isEmpty) {
       fetchExploreData();
+    } else if (_currentTabIndex == 2 && upcomingTrips.isEmpty) {
+      fetchTripsData();
+    }
+    notifyListeners();
+  }
+
+  // Trips Tab State (Trips = 0, Wishlist = 1)
+  int _tripsTabIndex = 0;
+  int get tripsTabIndex => _tripsTabIndex;
+  set tripsTabIndex(int index) {
+    _tripsTabIndex = index;
+    if (_tripsTabIndex == 1 && wishlistTrips.isEmpty) {
+      fetchWishlistData();
     }
     notifyListeners();
   }
@@ -33,6 +47,12 @@ class HomeProvider extends ChangeNotifier {
   List<ExploreCategory> exploreCategories = [];
   List<Destination> exploreDestinations = [];
   List<PopularSite> popularSites = [];
+
+  // My Trips Screen States
+  bool isLoadingTrips = false;
+  List<TripModel> upcomingTrips = [];
+  List<TripModel> pastTrips = [];
+  List<TripModel> wishlistTrips = [];
 
   Future<void> fetchAllHomeData() async {
     await Future.wait([
@@ -69,6 +89,45 @@ class HomeProvider extends ChangeNotifier {
       debugPrint("Error fetching explore data: $e");
     } finally {
       isLoadingExplore = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchTripsData() async {
+    try {
+      isLoadingTrips = true;
+      notifyListeners();
+
+      final response = await repository.getMyTrips();
+      
+      upcomingTrips = (response['upcoming'] as List)
+          .map((item) => TripModel.fromJson(item))
+          .toList();
+          
+      pastTrips = (response['past'] as List)
+          .map((item) => TripModel.fromJson(item))
+          .toList();
+    } catch (e) {
+      debugPrint("Error fetching trips: $e");
+    } finally {
+      isLoadingTrips = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchWishlistData() async {
+    try {
+      isLoadingTrips = true;
+      notifyListeners();
+
+      final response = await repository.getWishlist();
+      wishlistTrips = (response['data'] as List)
+          .map((item) => TripModel.fromJson(item))
+          .toList();
+    } catch (e) {
+      debugPrint("Error fetching wishlist: $e");
+    } finally {
+      isLoadingTrips = false;
       notifyListeners();
     }
   }
@@ -132,7 +191,6 @@ class HomeProvider extends ChangeNotifier {
   }
 
   Future<void> postIMSQInspectDetailsApiCall(HomeProvider homeProvider) async {
-    // This was previously defined as an empty stub or handled specific logic
     notifyListeners();
   }
 }
