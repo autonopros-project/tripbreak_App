@@ -120,4 +120,116 @@ class HomeRepository {
       ]
     };
   }
+
+  // New methods for My Trips Screen
+  Future<dynamic> getMyTrips() async {
+    await Future.delayed(const Duration(seconds: 1));
+    return {
+      "upcoming": [
+        {
+          "title": "Bali, Indonesia",
+          "location": "7-Day Wellness Retreat",
+          "date_range": "Aug 14 - Aug 21, 2025",
+          "description": "7-Day Wellness Retreat",
+          "image_url": "https://images.unsplash.com/photo-1537996194471-e657df975ab4",
+          "status": "Trip starts in 27 days",
+          "is_wishlist": true,
+        },
+        {
+          "title": "Alps, Switzerland",
+          "location": "Hiking & Glacier Escape",
+          "date_range": "Sep 3 - Sep 10, 2025",
+          "description": "Hiking & Glacier Escape",
+          "image_url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+          "status": "Trip starts in 47 days",
+          "is_wishlist": true,
+        },
+        {
+          "title": "Marrakech, Morocco",
+          "location": "Cultural Adventure",
+          "date_range": "Oct 18 - Oct 25, 2025",
+          "description": "Cultural Adventure",
+          "image_url": "https://images.unsplash.com/photo-1539020140153-e479b8c22e70",
+          "status": "Confirmed",
+          "is_wishlist": true,
+        }
+      ],
+      "past": [
+        {
+          "title": "Santorini, Greece",
+          "location": "Romantic Island Escape",
+          "date_range": "Jun 5 - Jun 12, 2024",
+          "description": "Romantic Island Escape",
+          "image_url": "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff",
+          "status": "Completed",
+          "is_wishlist": true,
+        }
+      ]
+    };
+  }
+
+  Future<dynamic> getWishlist() async {
+    await Future.delayed(const Duration(seconds: 1));
+    return {
+      "data": [
+        {
+          "title": "Swiss Alps Adventure",
+          "location": "Interlaken, Switzerland — 8 Days",
+          "date_range": "8 Days",
+          "description": "Interlaken, Switzerland",
+          "image_url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+          "rating": "4.8",
+          "price": "1,150",
+          "status": "Available",
+          "is_wishlist": true,
+        },
+        {
+          "title": "Cultural Desert Safari",
+          "location": "Marrakech, Morocco — 6 Days",
+          "date_range": "6 Days",
+          "description": "Marrakech, Morocco",
+          "image_url": "https://images.unsplash.com/photo-1539020140153-e479b8c22e70",
+          "rating": "4.7",
+          "price": "720",
+          "status": "Available",
+          "is_wishlist": true,
+        },
+        {
+          "title": "Romantic Paris Getaway",
+          "location": "Paris, France — 5 Days",
+          "date_range": "5 Days",
+          "description": "Paris, France",
+          "image_url": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34",
+          "rating": "4.8",
+          "price": "640",
+          "status": "Available",
+          "is_wishlist": true,
+        },
+        {
+          "title": "Winter Mountain Escape",
+          "location": "Banff, Canada — 7 Days",
+          "date_range": "7 Days",
+          "description": "Banff, Canada",
+          "image_url": "https://images.unsplash.com/photo-1517059224940-d4af9eec41b7",
+          "rating": "4.6",
+          "price": "980",
+          "status": "Available",
+          "is_wishlist": true,
+        }
+      ]
+    };
+  }
+
+  // New methods for Profile Screen
+  Future<dynamic> getUserProfile() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return {
+      "name": "John Cena",
+      "email": "johncena@gmail.com",
+      "avatar_url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+      "countries_visited": 12,
+      "total_trips": 18,
+      "flights_booked": 25,
+    };
+  }
 }
