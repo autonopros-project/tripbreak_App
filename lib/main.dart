@@ -1,11 +1,11 @@
-
-
 import 'package:tripBreak/src/core/core/theme/colors.dart';
 import 'package:tripBreak/src/core/core/utils/routes.dart';
 import 'package:tripBreak/src/core/core/utils/shared_preference.dart';
 import 'package:tripBreak/src/features/Home/provider/home_screen_provider.dart';
 import 'package:tripBreak/src/features/Home/repository/home_repository.dart';
 import 'package:tripBreak/src/features/Home/ui/homescreen.dart';
+import 'package:tripBreak/src/features/booking/provider/booking_provider.dart';
+import 'package:tripBreak/src/features/booking/repository/booking_repository.dart';
 import 'package:tripBreak/src/features/login/login_index.dart';
 
 import 'common_imports.dart';
@@ -29,9 +29,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<LoginProvider>(create: (_) => LoginProvider()),
-        ChangeNotifierProvider(create: (_) => HomeProvider(HomeRepository(),),
-        ),
-        // Add other providers here as needed
+        ChangeNotifierProvider(create: (_) => HomeProvider(HomeRepository())),
+        ChangeNotifierProvider(create: (_) => BookingProvider(BookingRepository())),
       ],
       child: SafeArea(
         child: MaterialApp(
@@ -39,6 +38,12 @@ class MyApp extends StatelessWidget {
           navigatorKey: NavigateRoutes.navigatorKey,
           theme: ThemeData(
             scaffoldBackgroundColor: ThemeColors.whiteColor,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              iconTheme: IconThemeData(color: Colors.black),
+              titleTextStyle: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             popupMenuTheme: const PopupMenuThemeData(
               color: ThemeColors.whiteColor,
               textStyle: TextStyle(color: ThemeColors.blackColor),
@@ -54,7 +59,7 @@ class MyApp extends StatelessWidget {
               );
             },
           ),
-          home: const HomeScreen(),  // ✅ FIX: add back your start screen
+          home: const HomeScreen(),
         ),
       ),
     );

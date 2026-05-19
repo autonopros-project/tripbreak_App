@@ -1,5 +1,6 @@
 import '../../../../../common_imports.dart';
 import '../../provider/home_screen_provider.dart';
+import '../../../booking/ui/trip_detail_screen.dart';
 
 class PopularSites extends StatelessWidget {
   const PopularSites({super.key});
@@ -38,8 +39,12 @@ class PopularSites extends StatelessWidget {
                 final site = provider.popularSites[index];
                 return InkWell(
                   onTap: () {
-                    debugPrint("Tapped on site: ${site.name}");
-                    // Future: Navigate to site details
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TripDetailScreen(tripId: site.name),
+                      ),
+                    );
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
